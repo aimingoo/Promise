@@ -29,9 +29,8 @@ local nil_promise = {}
 
 local function promised(value, action)
 	local ok, result = pcall(action, value)
-	return ok and Promise.resolve(result) or Promise.reject(result .. debug.traceback())
+	return ok and Promise.resolve(result) or Promise.reject(result) -- or reject(result .. debug.traceback())
 end
--- ngx.log(ngx.ALERT, results[2]..'.\n'..debug.traceback())
 
 local function promised_s(self, onFulfilled)
 	return onFulfilled and promised(self, onFulfilled) or self
@@ -162,7 +161,7 @@ function Promise.all(arr)
 		while i <= count do
 			local promise, typ, reason = promises[i], type(promises[i])
 			if typ == 'table' and promise.andThen and promise[1] == PENDING then
-				sure, reason = coroutine.yield()  -- ！！value是无意义的, reason是有意义的！！
+				sure, reason = coroutine.yield()
 				if not sure then
 					return resolver(this, reason, sure)
 				end
