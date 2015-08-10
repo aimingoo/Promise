@@ -177,7 +177,7 @@ function Promise.all(arr)
 		-- becuse 'result[x]=nil' will reset length to first invalid, so need reset it to last
 		-- 	1) invalid: setmetatable(result, {__len=function() retun count end})
 		-- 	2) obsoleted: table.setn(result, count)
-		resolver(this, sure and {unpack(result, 1, last)} or result, sure)
+		resolver(this, {unpack(result, 1, last)}, sure)
 	end)
 
 	-- init promises and push
