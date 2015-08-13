@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- ES6 Promise in lua v1.0.1
 -- Author: aimingoo@wandoujia.com
--- Copyright (c) 2015.03
+-- Copyright (c) 2015.08
 --
 -- The promise module from NGX_4C architecture
 --	1) N4C is programming framework.
