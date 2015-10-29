@@ -1,8 +1,5 @@
 ---------------------------------------------------------------
----		THE TESTCASE NEED luajit AND time MODULE
----
----	The time module download from:
----		https://luapower.com/time/
+---		RPC demo of promise framework
 ---------------------------------------------------------------
 -- The testcase: Do A(), and do B,C,D, and do E() base a,b,c
 -- The B() is simulated remote call
@@ -11,6 +8,7 @@
 --		30
 --	*) and waiting
 --		waiting a moment...
+--		andThen:	20
 --	*) and output promise's results for arr {B, C, D}
 --		20	ok	nil
 --	*) and catch a reson, done:
@@ -18,11 +16,9 @@
 --		Done
 ---------------------------------------------------------------
 
--- https://luapower.com/time
-sleep = require('lib.time').sleep
-
 -- Promise = require('Promise')
 Promise = dofile('../Promise.lua')
+sleep = function(n) os.execute("sleep " .. n) end
 
 local co_remote
 A = function() return 10 end
@@ -52,7 +48,10 @@ promise_A = Promise.new(function(resolve, reject)
 	local ok, result = pcall(A)
 	return (ok and resolve or reject)(result)
 end)
-promise_B = promise_A:andThen(B)
+
+local err = function(r) print("catch:", r) end
+local log = function(r) print("andThen:", r); return r end
+promise_B = promise_A:andThen(B):catch(err):andThen(log)
 promise_C = promise_A:andThen(C)
 promise_D = promise_A:andThen(D)
 

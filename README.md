@@ -1,7 +1,7 @@
 # Promise
 The Promise module in Lua. Simple, Fast and ES6 Promises full supported/compatibled.
 
-about ES6 Promises see here: [Promise in MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+about ES6 Promises see here: [Promise in MDC](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 
 a chinese document at here: [The Promise's World](http://blog.csdn.net/aimingoo/article/details/47401961)
 
@@ -95,3 +95,15 @@ Promise.all(promises)
 		print(reson)
 	end)
 ```
+# History
+--	2015.10.29	release v1.1, fix some bugs
+> 	- update testcases
+	- update: add .catch() for promised string
+	- update: protect call in .new method
+	- fix bug: resolver values when multi call .then()
+	- fix bug: non standard .reject() implement
+	- fix bug: some error in .all() and .race() methods
+
+--	2015.08.10	release v1.0.1, full testcases, minor fix and publish on github
+
+--	2015.03		release v1.0.0

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
--- ES6 Promise in lua v1.0.1
+-- ES6 Promise in lua v1.1
 -- Author: aimingoo@wandoujia.com
--- Copyright (c) 2015.08
+-- Copyright (c) 2015.11
 --
 -- The promise module from NGX_4C architecture
 --	1) N4C is programming framework.
@@ -16,6 +16,7 @@
 --	promise:andThen(onFulfilled1):andThen(onFulfilled2, onRejected2)
 --
 -- History:
+--	2015.10.29	release v1.1, fix some bugs and update testcases
 --	2015.08.10	release v1.0.1, full testcases, minor fix and publish on github
 --	2015.03		release v1.0.0
 -----------------------------------------------------------------------------
@@ -29,7 +30,7 @@ local nil_promise = {}
 
 local function promised(value, action)
 	local ok, result = pcall(action, value)
-	return ok and Promise.resolve(result) or Promise.reject(result) -- or reject(result .. debug.traceback())
+	return ok and Promise.resolve(result) or Promise.reject(result) -- .. '.\n' .. debug.traceback())
 end
 
 local function promised_s(self, onFulfilled)
@@ -44,8 +45,17 @@ local function promised_n(self, _, onRejected)
 	return onRejected and promised(self[1], onRejected) or self
 end
 
+-- inext() list all elementys in array
+--	*) next() will list all members for table without order
+--	*) @see iter(): http://www.lua.org/pil/7.3.html
+local function inext(a, i)
+	i = i + 1
+	local v = a[i]
+    if v then return i, v end
+end
 -- put resolved value to p[1], or push lazyed calls/object to p[]
 --	1) if resolved a no pending promise, direct call promise.andThen()
+local function nothing(x) return x end
 local function resolver(this, resolved, sure)
 	local typ = type(resolved)
 	if (typ == 'table' and resolved.andThen) then
@@ -59,8 +69,9 @@ local function resolver(this, resolved, sure)
 		end
 	else -- resolve as value
 		this[1], this.andThen = resolved, sure and promised_y or promised_n
-		for i, lazy in next, this, 1 do 	-- 2..n
-			pcall(resolver, lazy[1], promised(resolved, (sure and lazy[2] or lazy[3])), sure)
+		for i, lazy, action in inext, this, 1 do -- 2..n
+			action = sure and (lazy[2] or nothing) or (lazy[3] or nothing)
+			pcall(resolver, lazy[1], promised(resolved, action), sure)
 			this[i] = nil
 		end
 	end
@@ -97,6 +108,7 @@ local false_promise  = setmetatable({andThen = promised_y, false}, promise)
 number_promise.__index = number_promise
 nil_promise.andThen = promised_y
 getmetatable('').__index.andThen = promised_s
+getmetatable('').__index.catch = function(self) return self end
 setmetatable(nil_promise, promise)
 
 ------------------------------------------------------------------------------------------
@@ -147,11 +159,7 @@ function Promise.resolve(value)
 end
 
 function Promise.reject(reason)
-	if (type(reason) == 'table' and reason.andThen ~= nil) then
-		return reason
-	else
-		return setmetatable({andThen=promised_n, reason}, promise)
-	end
+	return setmetatable({andThen=promised_n, reason}, promise)
 end
 
 function Promise.all(arr)
@@ -159,16 +167,23 @@ function Promise.all(arr)
 	local co = coroutine.create(function()
 		local i, result, sure, last = 1, {}, true, 0
 		while i <= count do
-			local promise, typ, reason = promises[i], type(promises[i])
+			local promise, typ, reason, resolved = promises[i], type(promises[i])
 			if typ == 'table' and promise.andThen and promise[1] == PENDING then
 				sure, reason = coroutine.yield()
 				if not sure then
-					return resolver(this, reason, sure)
+					return resolver(this, {index = i, reason = reason}, sure)
 				end
 				-- dont inc <i>, continue and try pick again
 			else
+				-- check reject/resolve of promsied instance
+				--	*) TODO: dont access promise[1] or promised_n
+				sure = (typ == 'string') or (typ == 'table' and promise.andThen ~= promised_n)
+				resolved = (typ == 'string') and promise or promise[1]
+				if not sure then
+					return resolver(this, {index = i, reason = resolved}, sure)
+				end
 				-- pick result from promise, and push once
-				result[i] = typ == 'string' and promise or promise[1]
+				result[i] = resolved
 				if result[i] ~= nil then last = i end
 				i = i + 1
 			end
@@ -176,7 +191,7 @@ function Promise.all(arr)
 		-- becuse 'result[x]=nil' will reset length to first invalid, so need reset it to last
 		-- 	1) invalid: setmetatable(result, {__len=function() retun count end})
 		-- 	2) obsoleted: table.setn(result, count)
-		resolver(this, {unpack(result, 1, last)}, sure)
+		resolver(this, sure and {unpack(result, 1, last)} or result, sure)
 	end)
 
 	-- init promises and push
@@ -188,12 +203,15 @@ end
 function Promise.race(arr)
 	local this, result, count = setmetatable({PENDING}, promise), {}, #arr
 	local co = coroutine.create(function()
-		local i, sure, resolved = 1, true
+		local i, sure, resolved = 1
 		while i < count do
 			local promise, typ = result[i], type(result[i])
 			if typ == 'table' and promise.andThen and promise[1] == PENDING then
 				sure, resolved = coroutine.yield()
 			else
+				-- check reject/resolve of promsied instance
+				--	*) TODO: dont access promise[1] or promised_n
+				sure = (typ == 'string') or (typ == 'table' and promise.andThen ~= promised_n)
 				resolved = typ == 'string' and promise or promise[1]
 			end
 			-- pick resolved once only
@@ -215,10 +233,10 @@ end
 ------------------------------------------------------------------------------------------
 function Promise.new(func)
 	local this = setmetatable({PENDING}, promise)
-	pcall(func,
+	local ok, result = pcall(func,
 		function(value) return resolver(this, value, true) end,
 		function(reason) return resolver(this, reason, false) end)
-	return this
+	return ok and this or Promise.reject(result) -- .. '.\n' .. debug.traceback())
 end
 
 return Promise
