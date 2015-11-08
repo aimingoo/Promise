@@ -29,34 +29,43 @@ end):andThen(..)   -- more
 for the Promsie, call with '.':
 
 > - Promise.new(executor);
->>promise = Promise.new(function(resolve, reject) .. end);
+>```lua
+promise = Promise.new(function(resolve, reject) .. end);
+```
 >
 > - Promise.all(array);
->>promise = Promise.all(array)	-- a table as array
+```lua
+promise = Promise.all(array)	-- a table as array
+```
 >
 > - Promise.race(array)	-- a table as array
->>promise = Promise.race(array)	-- a table as array
+```lua
+promise = Promise.race(array)	-- a table as array
+```
 >
 > - Promise.reject(reason)
->>promise = Promise.reject(reason);	-- reason is anything
+```lua
+promise = Promise.reject(reason);	-- reason is anything
+```
 >
 > - Promise.resolve(value)
->>promise = Promise.resolve(value);
->>
->>promise = Promise.resolve(thenable);
->>
->>promise = Promise.resolve(promise);
+```lua
+promise = Promise.resolve(value);
+promise = Promise.resolve(thenable);
+promise = Promise.resolve(promise);
+```
 
 for promise instance, call with ':':
 > - promise:andThen(onFulfilled, onRejected)
->>promise2 = promise:andThen(functoin(value) ... end);
->>
->>promise2 = promise:andThen(nil, functoin(reson) ... end);
->>
+```lua
+promise2 = promise:andThen(functoin(value) ... end);
+promise2 = promise:andThen(nil, functoin(reson) ... end);
+```
 >
 > - promise:catch(onRejected)
->>promise2 = promise:catch(functoin(reson) ... end)
-
+```lua
+promise2 = promise:catch(functoin(reson) ... end)
+```
 
 # testcase or samples
 This is a base testcase:
