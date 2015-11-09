@@ -13,9 +13,14 @@ a chinese document at here: [The Promise's World](http://blog.csdn.net/aimingoo/
 
 
 # Install & Usage
-download the Promise.lua file and put into lua search path or current directory.
+download the Promise.lua file and put into lua search path or current directory, and load it as a file module from lua. 
 
-load it as a file module from lua. use Promise.new() or use Promise.xxx method to get promise object.
+or use luarocks and require as module:
+```bash
+> luarocks install promise-es6
+```
+
+and, use Promise.new() or use Promise.xxx method to get promise object.
 ```lua
 Promise = require('Promise')
 
