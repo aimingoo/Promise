@@ -5,6 +5,13 @@ about ES6 Promises see here: [Promise in MDN](https://developer.mozilla.org/en-U
 
 a chinese document at here: [The Promise's World](http://blog.csdn.net/aimingoo/article/details/47401961)
 
+###Table of Contents
+  * [Install &amp; Usage](#install--usage)
+  * [Interface](#interface)
+  * [testcase or samples](#testcase-or-samples)
+  * [History](#history)
+
+
 # Install & Usage
 download the Promise.lua file and put into lua search path or current directory.
 
