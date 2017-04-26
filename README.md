@@ -6,10 +6,10 @@ about ES6 Promises see here: [Promise in MDN](https://developer.mozilla.org/en-U
 a chinese document at here: [The Promise's World](http://blog.csdn.net/aimingoo/article/details/47401961)
 
 ###Table of Contents
-  * [Install &amp; Usage](#install--usage)
-  * [Interface](#interface)
-  * [testcase or samples](#testcase-or-samples)
-  * [History](#history)
+* [Install &amp; Usage](#install--usage)
+* [Interface](#interface)
+* [testcase or samples](#testcase-or-samples)
+* [History](#history)
 
 
 # Install & Usage
@@ -41,26 +41,27 @@ end):andThen(..)   -- more
 for the Promsie, call with '.':
 
 > - Promise.new(executor);
->```lua
-promise = Promise.new(function(resolve, reject) .. end);
+> ```lua
+> promise = Promise.new(function(resolve, reject) .. end);
+> ```
 ```
 >
 > - Promise.all(array);
-```lua
+​```lua
 promise = Promise.all(array)	-- a table as array
 ```
 >
-> - Promise.race(array)	-- a table as array
+>- Promise.race(array)	-- a table as array
 ```lua
 promise = Promise.race(array)	-- a table as array
 ```
 >
-> - Promise.reject(reason)
+>- Promise.reject(reason)
 ```lua
 promise = Promise.reject(reason);	-- reason is anything
 ```
 >
-> - Promise.resolve(value)
+>- Promise.resolve(value)
 ```lua
 promise = Promise.resolve(value);
 promise = Promise.resolve(thenable);
@@ -74,7 +75,7 @@ promise2 = promise:andThen(functoin(value) ... end);
 promise2 = promise:andThen(nil, functoin(reson) ... end);
 ```
 >
-> - promise:catch(onRejected)
+>- promise:catch(onRejected)
 ```lua
 promise2 = promise:catch(functoin(reson) ... end)
 ```
@@ -117,7 +118,13 @@ Promise.all(promises)
 	end)
 ```
 # History
+--	2017.04.26	release v1.2, fix some bugs
+
+>	- fix bug: value deliver on promise chain, about issue-#3, thanks for @stakira
+>	- ignore rewrite promised value
+
 --	2015.10.29	release v1.1, fix some bugs
+
 > 	- update testcases
 > 	- update: add .catch() for promised string
 > 	- update: protect call in .new method

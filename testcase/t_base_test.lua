@@ -45,6 +45,4 @@ promise_D = promise_A:andThen(D)
 promises = {promise_B, promise_C, promise_D}
 Promise.all(promises)
 	:andThen(E)
-	:catch(function(reson)
-		print(reson)
-	end)
+	:catch(print)

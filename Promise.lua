@@ -55,7 +55,6 @@ local function inext(a, i)
 end
 -- put resolved value to p[1], or push lazyed calls/object to p[]
 --	1) if resolved a no pending promise, direct call promise.andThen()
-local function nothing(x) return x end
 local function resolver(this, resolved, sure)
 	local typ = type(resolved)
 	if (typ == 'table' and resolved.andThen) then
@@ -68,10 +67,13 @@ local function resolver(this, resolved, sure)
 			resolved:andThen(lazy[2], lazy[3])
 		end
 	else -- resolve as value
-		this[1], this.andThen = resolved, sure and promised_y or promised_n
-		for i, lazy, action in inext, this, 1 do -- 2..n
-			action = sure and (lazy[2] or nothing) or (lazy[3] or nothing)
-			pcall(resolver, lazy[1], promised(resolved, action), sure)
+		if this[1] == PENDING then -- put value once only
+			this[1], this.andThen = resolved, sure and promised_y or promised_n
+		end
+		for i, lazy, action in inext, this, 1 do -- extract 2..n
+			action = (sure and lazy[2]) or (not sure and lazy[3])
+			pcall(resolver, lazy[1], action and promised(resolved, action) or
+				(sure and Promise.resolve or Promise.reject)(resolved), sure)
 			this[i] = nil
 		end
 	end
