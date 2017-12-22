@@ -1,11 +1,12 @@
 # Promise
 The Promise module in Lua. Simple, Fast and ES6 Promises full supported/compatibled.
 
-about ES6 Promises see here: [Promise in MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+About ES6 Promises see here: [Promise in MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 
-a chinese document at here: [The Promise's World](http://blog.csdn.net/aimingoo/article/details/47401961)
+A chinese document at here: [The Promise's World](http://blog.csdn.net/aimingoo/article/details/47401961)
 
-###Table of Contents
+### Table of Contents
+
 * [Install &amp; Usage](#install--usage)
 * [Interface](#interface)
 * [testcase or samples](#testcase-or-samples)
@@ -13,14 +14,16 @@ a chinese document at here: [The Promise's World](http://blog.csdn.net/aimingoo/
 
 
 # Install & Usage
-download the Promise.lua file and put into lua search path or current directory, and load it as a file module from lua. 
+Download the file `Promise.lua` and put it into lua search path or current directory, and load as module from lua.
 
-or use luarocks and require as module:
+Or use luarocks and require as module:
+
 ```bash
 > luarocks install promise-es6
 ```
 
-and, use Promise.new() or use Promise.xxx method to get promise object.
+and, use `Promise.new()` or use `Promise.xxx` method to get promise object.
+
 ```lua
 Promise = require('Promise')
 
@@ -38,50 +41,59 @@ end):andThen(..)   -- more
 
 # Interface
 
-for the Promsie, call with '.':
+* **For the Promsie class, call with '.'**
 
-> - Promise.new(executor);
+**Promise.new(executor)**
+
 > ```lua
 > promise = Promise.new(function(resolve, reject) .. end);
 > ```
-```
->
-> - Promise.all(array);
-​```lua
-promise = Promise.all(array)	-- a table as array
-```
->
->- Promise.race(array)	-- a table as array
-```lua
-promise = Promise.race(array)	-- a table as array
-```
->
->- Promise.reject(reason)
-```lua
-promise = Promise.reject(reason);	-- reason is anything
-```
->
->- Promise.resolve(value)
-```lua
-promise = Promise.resolve(value);
-promise = Promise.resolve(thenable);
-promise = Promise.resolve(promise);
-```
 
-for promise instance, call with ':':
-> - promise:andThen(onFulfilled, onRejected)
-```lua
-promise2 = promise:andThen(functoin(value) ... end);
-promise2 = promise:andThen(nil, functoin(reson) ... end);
-```
->
->- promise:catch(onRejected)
-```lua
-promise2 = promise:catch(functoin(reson) ... end)
-```
+**Promise.all(array)**
+
+> ```
+> promise = Promise.all(array)	-- a table as array
+> ```
+
+**Promise.race(array)**
+
+> ```lua
+> promise = Promise.race(array)	-- a table as array
+> ```
+
+**Promise.reject(reason)**
+
+> ```lua
+> promise = Promise.reject(reason);	-- reason is anything
+> ```
+
+**Promise.resolve(value)**
+
+> ```lua
+> promise = Promise.resolve(value);
+> promise = Promise.resolve(thenable);
+> promise = Promise.resolve(promise);
+> ```
+
+* **For promise instance, call with ':'**
+
+**promise:andThen(onFulfilled, onRejected)**
+
+> ```lua
+> promise2 = promise:andThen(functoin(value) ... end);
+> promise2 = promise:andThen(nil, functoin(reson) ... end);
+> ```
+
+**promise:catch(onRejected)**
+
+> ```lua
+> promise2 = promise:catch(functoin(reson) ... end)
+> ```
 
 # testcase or samples
+
 This is a base testcase:
+
 ```lua
 ---
 --- from testcase/t_base_test.lua
@@ -117,21 +129,27 @@ Promise.all(promises)
 		print(reson)
 	end)
 ```
+
 # History
---	2017.04.26	release v1.2, fix some bugs
 
->	- fix bug: value deliver on promise chain, about issue-#3, thanks for @stakira
->	- ignore rewrite promised value
+* 2017.04.26	release v1.2, fix some bugs
 
---	2015.10.29	release v1.1, fix some bugs
+```
+	- fix bug: value deliver on promise chain, about issue-#3, thanks for @stakira
+	- ignore rewrite promised value
+```
 
-> 	- update testcases
-> 	- update: add .catch() for promised string
-> 	- update: protect call in .new method
-> 	- fix bug: resolver values when multi call .then()
-> 	- fix bug: non standard .reject() implement
-> 	- fix bug: some error in .all() and .race() methods
+* 2015.10.29	release v1.1, fix some bugs
 
---	2015.08.10	release v1.0.1, full testcases, minor fix and publish on github
+```
+ 	- update testcases
+ 	- update: add .catch() for promised string
+ 	- update: protect call in .new method
+ 	- fix bug: resolver values when multi call .then()
+ 	- fix bug: non standard .reject() implement
+ 	- fix bug: some error in .all() and .race() methods
+```
 
---	2015.03		release v1.0.0
+* 2015.08.10	release v1.0.1, full testcases, minor fix and publish on github
+
+* 2015.03	release v1.0.0
