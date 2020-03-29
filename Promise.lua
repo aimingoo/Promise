@@ -48,11 +48,8 @@ end
 -- inext() list all elementys in array
 --	*) next() will list all members for table without order
 --	*) @see iter(): http://www.lua.org/pil/7.3.html
-local function inext(a, i)
-	i = i + 1
-	local v = a[i]
-    if v then return i, v end
-end
+local inext = ipairs{}
+
 -- put resolved value to p[1], or push lazyed calls/object to p[]
 --	1) if resolved a no pending promise, direct call promise.andThen()
 local function resolver(this, resolved, sure)
